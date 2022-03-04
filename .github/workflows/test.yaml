@@ -1,0 +1,64 @@
+# This workflow will run tests against a Postgres database on Ubuntu
+# For more information see: https://docs.github.com/en/actions/using-containerized-services/creating-postgresql-service-containers
+
+name: Run Test Suite
+
+on:
+  pull_request:
+    types: [ opened, synchronize ]
+    branches:
+      - main
+      - dev
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_USER: user
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: database
+        ports: [ "5432:5432" ]
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: "16.x"
+      - name: Cache node modules
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-node-modules
+        with:
+          # npm cache files are stored in `~/.npm` on Linux/macOS
+          path: ~/.npm
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+
+      - name: Install Dependencies
+        run: yarn
+
+      - name: Linting checks
+        run: yarn check-style
+
+      - name: Typing checks
+        run: yarn check-types
+
+      - name: Prepare test database
+        run: |
+          PGPASSWORD=password psql -h localhost -U user -d database -tc "CREATE SCHEMA poc;"
+          # TODO: Generate migrations
+          # TODO: Migrate
+          # TODO: Seed data
+
+      - name: Tests
+        run: |
+          yarn test
