@@ -28,7 +28,8 @@ yarn add @kingdom-sdk/orm
 - [**ESLint**](https://www.npmjs.com/package/eslint): Style and code enforcement.
 - [**Prettier**](https://www.npmjs.com/package/prettier): Style enforcement.
 - [**Babel**](https://www.npmjs.com/package/@babel/core): JS compiler.
-- [**Husky**](https://www.npmjs.com/package/husky): Git hooks utility.
+- [**Husky**](https://www.npmjs.com/package/husky): Git hooks utility (pre-commit).
+- [**Lint staged**](https://www.npmjs.com/package/lint-staged): Run style check only for staged files (pre-commit).
 - [**Jest**](https://www.npmjs.com/package/jest): Testing framework.
 
 ## Production Dependencies
@@ -44,7 +45,7 @@ After installing the dependencies, automatically the script `prepare` will set u
 To add a script to be run before every commit (such as code enforcement), follow the example below or edit by hand the [`pre-commit`](.husky/pre-commit) file.
 
 ```bash
-yarn husky add .husky/pre-commit "yarn check-style"
+yarn husky add .husky/pre-commit "yarn lint-staged"
 ```
 
 ## REPL
