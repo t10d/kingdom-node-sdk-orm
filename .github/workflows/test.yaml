@@ -52,13 +52,13 @@ jobs:
       - name: Typing checks
         run: yarn check-types
 
-      - name: Prepare test database
-        run: |
-          PGPASSWORD=password psql -h localhost -U user -d database -tc "CREATE SCHEMA poc;"
-          # TODO: Generate migrations
-          # TODO: Migrate
-          # TODO: Seed data
+      # - name: Prepare test database
+      #   run: |
+      #     PGPASSWORD=password psql -h localhost -U user -d database -tc "CREATE SCHEMA poc;"
+      #     # TODO: Generate migrations
+      #     # TODO: Migrate
+      #     # TODO: Seed data
 
-      - name: Tests
-        run: |
-          yarn test
+      # - name: Tests
+      #   run: |
+      #     yarn test
