@@ -20,7 +20,7 @@ check-types:
 	@echo "✅ type checking done."
 
 check-style:
-	yarn eslint . --ext .ts,.js,.json --fix
+	yarn check-style --fix
 	@echo "✅ style checking done."
 
 clean:
