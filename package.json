@@ -1,6 +1,6 @@
 {
   "name": "@kingdom-sdk/orm",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "ORM module to provide persistence to DDD applications in TypeScript through a relational database",
   "keywords": [
     "typescript",
