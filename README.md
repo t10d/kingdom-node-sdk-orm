@@ -35,6 +35,7 @@ yarn add @kingdom-sdk/orm
 ## Production Dependencies
 
 - [**Kingdom SDK Core**](https://www.npmjs.com/package/@kingdom-sdk/core): DDD domain models.
+- [**Inversify**](https://www.npmjs.com/package/inversify): Dependency injection.
 - [**TypeORM**](https://www.npmjs.com/package/typeorm): ORM framework.
 - [**Reflect metadata**](https://www.npmjs.com/package/reflect-metadata): Metadata reflection required by TypeORM.
 
