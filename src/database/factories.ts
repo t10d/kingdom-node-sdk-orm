@@ -19,7 +19,7 @@ export function createEntityTable<T extends IEntity<any>>(
   return new EntitySchema<T>({
     name,
     columns: {
-      ...columns, // You have to specify the id by yourserf
+      ...columns, // You have to specify the id by yourself
       version: {
         type: 'int',
       },
