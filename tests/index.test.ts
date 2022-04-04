@@ -1,23 +1,25 @@
 import { getConnection } from 'typeorm';
 import { startMappers } from '../src/database/orm';
+import { myRepos, myTypes } from './resources/config';
 import { createMyAggregate } from './resources/models/MyAggregate';
 import { createMyEntity } from './resources/models/MyEntity';
-import { TypeOrmUnitOfWork } from '../src/adapters/unit_of_work';
-import { MyAggregateMapper } from './resources/orm';
+import { MyUOW } from './resources/uow/MyUOW';
+import { myContainer } from './resources/bootstrap';
+
+let uow: MyUOW;
 
 beforeEach(async () => {
   await startMappers();
+  uow = myContainer.get<MyUOW>(myTypes.MyUOW);
 });
 
-test('Store throgh uoe', async () => {
+test('Store through uow', async () => {
   const myEntity = createMyEntity('test one');
   const myAggregate = createMyAggregate(myEntity, 10);
 
-  const connection = getConnection();
-  const uow = new TypeOrmUnitOfWork(connection);
+  uow.setConnection(getConnection());
 
-  await uow.run(() => {
-    const repo = uow.entityManager.getRepository(MyAggregateMapper);
-    repo.save(myAggregate);
+  await uow.run(async () => {
+    await uow.repository(myRepos.myAggregates).save(myAggregate);
   });
 });
