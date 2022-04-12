@@ -1,6 +1,6 @@
 import { injectable, unmanaged } from 'inversify';
 import { Connection, EntityManager, QueryRunner } from 'typeorm';
-import { Aggregate } from '@kingdom-sdk/core/dist/domain/models/Aggregate';
+import { Entity } from '@kingdom-sdk/core/dist/domain/models/Entity';
 import { UnitOfWork } from '../ports/UnitOfWork';
 import { DbTransactionNotStarted } from './exceptions/DbTransactionNotStarted';
 import { DbConnectionNotEstablished } from './exceptions/DbConnectionNotEstablished';
@@ -38,7 +38,7 @@ export abstract class TypeOrmUnitOfWork implements UnitOfWork {
     return this.queryRunner.manager;
   }
 
-  public repository<T extends Aggregate<any>>(name: string): TypeOrmRepository<T> {
+  public repository<T extends Entity<any>>(name: string): TypeOrmRepository<T> {
     return this._repositories[name];
   }
 
