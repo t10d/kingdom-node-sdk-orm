@@ -1,11 +1,11 @@
-import { Aggregate } from '@kingdom-sdk/core/dist/domain/models/Aggregate';
+import { Entity } from '@kingdom-sdk/core/dist/domain/models/Entity';
 import { injectable, unmanaged } from 'inversify';
 import typeorm, { EntityManager, EntitySchema } from 'typeorm';
 import { Repository } from '../ports/Repository';
 import { RepositoryEntityManagerUnset } from './exceptions/RepositoryEntityManagerUnset';
 
 @injectable()
-export abstract class TypeOrmRepository<T extends Aggregate<any>> implements Repository<T> {
+export abstract class TypeOrmRepository<T extends Entity<any>> implements Repository<T> {
   private _entityManager?: EntityManager;
 
   private readonly entitySchema: EntitySchema;
@@ -29,7 +29,11 @@ export abstract class TypeOrmRepository<T extends Aggregate<any>> implements Rep
     return this.entityManager.getRepository(this.entitySchema);
   }
 
-  public async save(aggregate: T): Promise<void> {
-    return this.repository.save(aggregate);
+  public async save(entity: T): Promise<void> {
+    await this.repository.save(entity);
+  }
+
+  public async update(entity: T): Promise<void> {
+    await this.repository.update({ id: entity.id }, entity.props);
   }
 }

@@ -1,5 +1,6 @@
-import { Aggregate } from '@kingdom-sdk/core/dist/domain/models/Aggregate';
+import { Entity } from '@kingdom-sdk/core/dist/domain/models/Entity';
 
-export interface Repository<T extends Aggregate<any>> {
-  save(aggregate: T): Promise<void>; // eslint-disable-line no-unused-vars
+export interface Repository<T extends Entity<any>> {
+  save(entity: T): Promise<void>; // eslint-disable-line no-unused-vars
+  update(entity: T): Promise<void>; // eslint-disable-line no-unused-vars
 }
