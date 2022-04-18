@@ -36,4 +36,8 @@ export abstract class TypeOrmRepository<T extends Entity<any>> implements Reposi
   public async update(entity: T): Promise<void> {
     await this.repository.update({ id: entity.id }, entity.props);
   }
+
+  public async empty(): Promise<void> {
+    await this.repository.clear();
+  }
 }

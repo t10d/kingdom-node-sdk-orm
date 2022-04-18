@@ -23,3 +23,10 @@ test('Store through uow', async () => {
     await uow.repository(myRepos.myAggregates).save(myAggregate);
   });
 });
+
+test.skip('Empty repository', async () => {
+  uow.setConnection(getConnection());
+  await uow.run(async () => {
+    await uow.repository(myRepos.myAggregates).empty();
+  });
+});
