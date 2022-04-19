@@ -5,6 +5,7 @@ import { UnitOfWork } from '../ports/UnitOfWork';
 import { DbTransactionNotStarted } from './exceptions/DbTransactionNotStarted';
 import { DbConnectionNotEstablished } from './exceptions/DbConnectionNotEstablished';
 import { TypeOrmRepository } from './Repository';
+import { QueryRunnerUnset } from './exceptions/QueryRunnerUnset';
 
 export interface RepositoryMap {
   [name: string]: TypeOrmRepository<any>;
@@ -14,6 +15,8 @@ export interface RepositoryMap {
 export abstract class TypeOrmUnitOfWork implements UnitOfWork {
   private _queryRunner?: QueryRunner;
 
+  private _dbConnection?: Connection;
+
   private _repositories: RepositoryMap;
 
   public constructor(@unmanaged() repositories: RepositoryMap) {
@@ -21,14 +24,21 @@ export abstract class TypeOrmUnitOfWork implements UnitOfWork {
   }
 
   public setConnection(dbConnection: Connection) {
-    this._queryRunner = dbConnection.createQueryRunner();
+    this._dbConnection = dbConnection;
   }
 
   public get queryRunner(): QueryRunner {
     if (!this._queryRunner) {
-      throw new DbConnectionNotEstablished();
+      throw new QueryRunnerUnset();
     }
     return this._queryRunner;
+  }
+
+  public get dbConnection(): Connection {
+    if (!this._dbConnection) {
+      throw new DbConnectionNotEstablished();
+    }
+    return this._dbConnection;
   }
 
   private get entityManager(): EntityManager {
@@ -43,6 +53,7 @@ export abstract class TypeOrmUnitOfWork implements UnitOfWork {
   }
 
   public begin(): Promise<void> {
+    this._queryRunner = this.dbConnection.createQueryRunner();
     return this.queryRunner.startTransaction();
   }
 
