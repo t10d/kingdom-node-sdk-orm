@@ -52,17 +52,22 @@ export abstract class TypeOrmUnitOfWork implements UnitOfWork {
     return this._repositories[name];
   }
 
-  public begin(): Promise<void> {
+  public async begin(): Promise<void> {
     this._queryRunner = this.dbConnection.createQueryRunner();
-    return this.queryRunner.startTransaction();
+    await this.queryRunner.startTransaction();
+    this.initializeRepositories();
   }
 
-  public commit(): Promise<void> {
-    return this.queryRunner.commitTransaction();
+  public async commit(): Promise<void> {
+    await this.queryRunner.commitTransaction();
   }
 
-  public rollback(): Promise<void> {
-    return this.queryRunner.rollbackTransaction();
+  public async rollback(): Promise<void> {
+    await this.queryRunner.rollbackTransaction();
+  }
+
+  public async release(): Promise<void> {
+    await this.queryRunner.release();
   }
 
   private initializeRepositories() {
@@ -74,8 +79,6 @@ export abstract class TypeOrmUnitOfWork implements UnitOfWork {
   public async run(work: () => Promise<void>) {
     await this.begin();
 
-    this.initializeRepositories();
-
     try {
       await work();
       await this.commit();
@@ -83,7 +86,7 @@ export abstract class TypeOrmUnitOfWork implements UnitOfWork {
       await this.rollback();
       throw error;
     } finally {
-      await this.queryRunner.release();
+      await this.release();
     }
   }
 }
