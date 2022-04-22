@@ -37,6 +37,10 @@ export abstract class TypeOrmRepository<T extends Entity<any>> implements Reposi
     await this.repository.update({ id: entity.id }, entity.props);
   }
 
+  public async delete(entity: T): Promise<void> {
+    await this.repository.delete(entity.id);
+  }
+
   public async empty(): Promise<void> {
     await this.repository.clear();
   }
